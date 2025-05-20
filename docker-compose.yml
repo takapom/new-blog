@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./blog-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./blog-backend:/app
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=blog_backend.settings
+    networks:
+      - blog-network
+
+  frontend:
+    build: ./blog-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./blog-frontend:/app
+      - /app/node_modules
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - blog-network
+
+networks:
+  blog-network:
+    driver: bridge 
